@@ -1,0 +1,27 @@
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+#pragma code_page(1251)
+
+VS_VERSION_INFO VERSIONINFO
+  FILEVERSION    1,0,0,31
+  PRODUCTVERSION 1,0,0,31
+  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+  FILEFLAGS VS_FF_DEBUG|VS_FF_PRIVATEBUILD|VS_FF_PRERELEASE
+  FILETYPE VFT_DLL
+
+{
+  BLOCK "StringFileInfo"
+  {
+    BLOCK "041904E3"
+    {
+      VALUE "CompanyName",      "MSoft Inc.\000"
+      VALUE "LegalCopyright",   "Copyright \251 MSoft Inc. 2007-2016\000"
+      VALUE "OriginalFilename", "udr_SphinxClient.dll\000"
+      VALUE "FileVersion",      "1.0.0.31\000"
+      VALUE "ProductVersion",   "1.0.0.31\000"
+    }
+  }
+  BLOCK "VarFileInfo"
+  {
+    VALUE "Translation", 0x0419, 0x04E3
+  }
+}
