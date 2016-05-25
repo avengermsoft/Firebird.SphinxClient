@@ -1,5 +1,5 @@
 # Firebird.SphinxClient
-Библиотека позволяет делать запросы к Sphinx из PL/SQL Firebird. Поставляется в двух вариантах UDF (Firebird 2.5/3.0) и UDR (Firebird 3.0)
+Библиотека позволяет делать запросы к Sphinx из PL/SQL Firebird. Поставляется в двух вариантах - UDF (Firebird 2.5/3.0) и UDR (Firebird 3.0)
 
 ##### Настройка UDF
 1.	Необходимо в каталог UDF сервера Firebird скопировать два файла udf_SphinxClient.dll и udf_SphinxClient.ini
