@@ -35,8 +35,8 @@ BEGIN
 END
 ```
 
-##### Настройка UDF
-1.	Необходимо в каталог UDF сервера Firebird скопировать два файла udr_SphinxClient.dll и udr_SphinxClient.ini
+##### Настройка UDR
+1.	Необходимо в каталог UDR сервера Firebird скопировать два файла udr_SphinxClient.dll и udr_SphinxClient.ini
 2.	Произвести первичную настройку в файле udr_SphinxClient.ini, где указать адрес и порт Sphinx сервера, библиотеку доступа к SphinxQL.
 3.	Пролить в базу файл udr_SphinxClient.sql
 
