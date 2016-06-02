@@ -13,6 +13,15 @@ uses
   SphinxClient in 'Includes\SphinxClient.pas',
   functions_SphinxClient in 'Includes\functions_SphinxClient.pas';
 
+exports
+  ClientCreate,
+  ClientFree,
+  ClientNext,
+  ClientEOF,
+  ClientExecSQL,
+  ClientGetCurrentValue,
+  QuotedStr;
+
 begin
   IsMultiThread := True;
 
