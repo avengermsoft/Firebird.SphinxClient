@@ -1,9 +1,6 @@
 unit functions_SphinxClient;
 
-{$IFDEF FPC}
-  {$MODE Delphi}
-  {$H+}
-{$ENDIF}
+{$INCLUDE udf_SphinxClient.inc}
 
 interface
 
