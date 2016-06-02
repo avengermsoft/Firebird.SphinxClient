@@ -1,11 +1,27 @@
 unit u_SphinxMySQL;
 
+{$IFDEF FPC}
+  {$MODE Delphi}
+  {$H+}
+{$ENDIF}
+
 {$ALIGN ON}
 {$MINENUMSIZE 4}
 
+{$IFDEF MSWINDOWS}
+  {$IFNDEF WINDOWS}
+    {$DEFINE WINDOWS}
+  {$ENDIF WINDOWS}
+{$ENDIF MSWINDOWS}
+
 interface
 
-uses System.SysUtils, Winapi.Windows;
+uses
+  {$IFNDEF FPC}
+  System.SysUtils, Winapi.Windows
+  {$ELSE}
+  SysUtils, dl
+  {$ENDIF};
 
 type
   PMySQL                    = Pointer;
@@ -35,29 +51,29 @@ type
     MYSQL_OPT_CAN_HANDLE_EXPIRED_PASSWORDS,
     MYSQL_OPT_SSL_ENFORCE
   );
-  Tmysql_init               = function (_mysql: PMySQL): PMySQL; stdcall;
-  Tmysql_real_connect       = function (_mysql: PMySQL; host, user, passwd, db: PAnsiChar; port: Cardinal; unix_socket: PAnsiChar; clientflag: Cardinal): PMySQL; stdcall;
-  Tmysql_close              = procedure(_mysql: PMySQL); stdcall;
-  Tmysql_options            = function (_mysql: PMySQL; option: TMySQLOption; arg: Pointer): Integer; stdcall;
-  Tmysql_set_character_set  = function (_mysql: PMySQL; csname: PAnsiChar): Integer; stdcall;
-  Tmysql_character_set_name = function (_mysql: PMySQL): PAnsiChar; stdcall;
-  Tmysql_query              = function (_mysql: PMySQL; q: PAnsiChar): Integer; stdcall;
-  Tmysql_real_query         = function (_mysql: PMySQL; q: PAnsiChar; length: Cardinal): Integer; stdcall;
-  Tmysql_store_result       = function (_mysql: PMySQL): PMySQLResult; stdcall;
-  Tmysql_num_fields         = function (_res: PMySQLResult): Cardinal; stdcall;
-  Tmysql_num_rows           = function (_res: PMySQLResult): UInt64; stdcall;
-  Tmysql_fetch_row          = function (_res: PMySQLResult): PMySQLRow; stdcall;
-  Tmysql_fetch_lengths      = function (_res: PMySQLResult): PMySQLLengths; stdcall;
-  Tmysql_free_result        = procedure(_res: PMySQLResult); stdcall;
-  Tmysql_errno              = function (_mysql: PMySQL): Cardinal; stdcall;
-  Tmysql_error              = function (_mysql: PMySQL): PAnsiChar; stdcall;
-  Tmysql_get_server_info    = function (_mysql: PMySQL): PAnsiChar; stdcall;
-  Tmysql_get_server_version = function (_mysql: PMySQL): Cardinal; stdcall;
+  Tmysql_init               = function (_mysql: PMySQL): PMySQL; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_real_connect       = function (_mysql: PMySQL; host, user, passwd, db: PAnsiChar; port: Cardinal; unix_socket: PAnsiChar; clientflag: Cardinal): PMySQL; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_close              = procedure(_mysql: PMySQL); {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_options            = function (_mysql: PMySQL; option: TMySQLOption; arg: Pointer): Integer; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_set_character_set  = function (_mysql: PMySQL; csname: PAnsiChar): Integer; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_character_set_name = function (_mysql: PMySQL): PAnsiChar; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_query              = function (_mysql: PMySQL; q: PAnsiChar): Integer; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_real_query         = function (_mysql: PMySQL; q: PAnsiChar; length: Cardinal): Integer; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_store_result       = function (_mysql: PMySQL): PMySQLResult; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_num_fields         = function (_res: PMySQLResult): Cardinal; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_num_rows           = function (_res: PMySQLResult): UInt64; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_fetch_row          = function (_res: PMySQLResult): PMySQLRow; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_fetch_lengths      = function (_res: PMySQLResult): PMySQLLengths; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_free_result        = procedure(_res: PMySQLResult); {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_errno              = function (_mysql: PMySQL): Cardinal; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_error              = function (_mysql: PMySQL): PAnsiChar; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_get_server_info    = function (_mysql: PMySQL): PAnsiChar; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_get_server_version = function (_mysql: PMySQL): Cardinal; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
 
   ESphinxMySQLClientLibrary = Exception;
   TSphinxMySQLClientLibrary = class
   private
-    FLibraryHandle: THandle;
+    FLibraryHandle: {$IFDEF WINDOWS}THandle;{$ENDIF}{$IFDEF LINUX}Pointer;{$ENDIF}
     FLibraryName: String;
   private
     Fmysql_init              : Tmysql_init;
@@ -272,16 +288,30 @@ end;
 
 procedure TSphinxMySQLClientLibrary.LoadLibrary;
 
-  function GetProcAddr(AProcName: PAnsiChar): Pointer;
+  {$IFDEF WINDOWS}
+  function GetProcAddr(const AProcName: String): Pointer;
   begin
-    Result := Winapi.Windows.GetProcAddress(FLibraryHandle, AProcName);
+    Result := Winapi.Windows.GetProcAddress(FLibraryHandle, PChar(AProcName));
     if not Assigned(Result) then
       RaiseLastOSError;
   end;
+  {$ENDIF}
+  {$IFDEF LINUX}
+  function GetProcAddr(const AProcName: String): Pointer;
+  begin
+    Result := dlsym(FLibraryHandle, PChar(AProcName));
+  end;
+  {$ENDIF}
 
 begin
+  {$IFDEF WINDOWS}
   FLibraryHandle := Winapi.Windows.LoadLibrary(PChar(FLibraryName));
   if (FLibraryHandle > HINSTANCE_ERROR) then
+  {$ENDIF}
+  {$IFDEF LINUX}
+  FLibraryHandle := dlopen(PChar(FLibraryName), RTLD_LAZY);
+  if Assigned(FLibraryHandle) then
+  {$ENDIF}
   begin
     Fmysql_init               := GetProcAddr('mysql_init');
     Fmysql_real_connect       := GetProcAddr('mysql_real_connect');
@@ -308,16 +338,30 @@ end;
 
 procedure TSphinxMySQLClientLibrary.FreeLibrary;
 begin
+  {$IFDEF WINDOWS}
   if (FLibraryHandle > HINSTANCE_ERROR) then
   begin
     Winapi.Windows.FreeLibrary(FLibraryHandle);
     FLibraryHandle := HINSTANCE_ERROR;
   end;
+  {$ENDIF}
+  {$IFDEF LINUX}
+  if Assigned(FLibraryHandle) then
+  begin
+     dlclose(FLibraryHandle);
+     FLibraryHandle := nil;
+  end;
+  {$ENDIF}
 end;
 
 function TSphinxMySQLClientLibrary.LibraryLoaded: Boolean;
 begin
-  Result := FLibraryHandle > HINSTANCE_ERROR
+  {$IFDEF WINDOWS}
+  Result := FLibraryHandle > HINSTANCE_ERROR;
+  {$ENDIF}
+  {$IFDEF LINUX}
+  Result := Assigned(FLibraryHandle);
+  {$ENDIF}
 end;
 
 end.
