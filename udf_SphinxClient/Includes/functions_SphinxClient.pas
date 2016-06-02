@@ -1,10 +1,20 @@
 unit functions_SphinxClient;
 
+{$IFDEF FPC}
+  {$MODE Delphi}
+  {$H+}
+{$ENDIF}
+
 interface
 
 implementation
 
-uses System.SysUtils, Winapi.Windows, System.IniFiles, System.AnsiStrings, SphinxClient;
+uses
+  {$IFNDEF FPC}
+  System.SysUtils, Winapi.Windows, System.IniFiles, System.AnsiStrings, SphinxClient
+  {$ELSE}
+  SysUtils, IniFiles, SphinxClient
+  {$ENDIF};
 
 var
   ClientManager: TSphinxClientManager;
@@ -76,18 +86,21 @@ var
 begin
   AStr := '';
   if Assigned(AInput) then
-    AStr := UTF8Encode(System.SysUtils.QuotedStr(UTF8ToString(AInput)));
-  System.AnsiStrings.StrLCopy(AResultStr, PAnsiChar(AStr), Length(AStr));
+    AStr := UTF8Encode({$IFNDEF FPC}System.{$ENDIF}SysUtils.QuotedStr({$IFNDEF FPC}UTF8ToString{$ENDIF}(AInput)));
+  {$IFNDEF FPC}System.AnsiStrings.{$ENDIF}StrLCopy(AResultStr, PAnsiChar(AStr), Length(AStr));
 end;
 
 procedure InitClientManager;
 var
+  {$IFDEF WINDOWS}
   P: PChar;
+  {$ENDIF}
   AModuleName: String;
   ALibName: String;
   AServer: String;
   APort: Integer;
 begin
+  {$IFDEF WINDOWS}
   GetMem(P, MAX_PATH);
   try
     SetString(AModuleName, P, GetModuleFileName(HInstance, P, MAX_PATH));
@@ -95,6 +108,10 @@ begin
     FreeMem(P);
   end;
   AModuleName   := ChangeFileExt(AModuleName, '.ini');
+  {$ENDIF}
+  {$IFDEF LINUX}
+  AModuleName   := '/etc/udf_SphinxClient/udf_SphinxClient.conf';
+  {$ENDIF}
   ALibName      := 'libmysql.dll';
   AServer       := '127.0.0.1';
   APort         := 9306;

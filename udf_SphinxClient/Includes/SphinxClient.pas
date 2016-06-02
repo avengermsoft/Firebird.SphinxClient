@@ -1,8 +1,18 @@
 unit SphinxClient;
 
+{$IFDEF FPC}
+  {$MODE Delphi}
+  {$H+}
+{$ENDIF}
+
 interface
 
-uses System.SysUtils, System.Classes, u_SphinxMySQL;
+uses
+  {$IFNDEF FPC}
+  System.SysUtils, System.Classes, u_SphinxMySQL
+  {$ELSE}
+  SysUtils, Classes, u_SphinxMySQL
+  {$ENDIF};
 
 type
   TSphinxClient = class(TObject)
