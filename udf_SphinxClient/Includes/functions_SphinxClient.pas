@@ -4,6 +4,14 @@ unit functions_SphinxClient;
 
 interface
 
+function ClientCreate: Integer; cdecl;
+function ClientFree(const AClientID: PInteger): Integer; cdecl;
+function ClientNext(const AClientID: PInteger): Integer; cdecl;
+function ClientEOF(const AClientID: PInteger): Integer; cdecl;
+function ClientExecSQL(const AClientID: PInteger; const AInput: PAnsiChar): Integer; cdecl;
+procedure ClientGetCurrentValue(const AClientID, AFieldIndex: PInteger; AResultStr: PAnsiChar); cdecl;
+procedure QuotedStr(const AInput: PAnsiChar; AResultStr: PAnsiChar); cdecl;
+
 implementation
 
 uses
@@ -14,15 +22,15 @@ uses
   {$ENDIF};
 
 var
-  ClientManager: TSphinxClientManager;
+  ClientManager: TSphinxClientManager = nil;
 
-function ClientCreate: Integer; cdecl; export;
+function ClientCreate: Integer; cdecl;
 begin
   with ClientManager do
     Result := CreateClient;
 end;
 
-function ClientFree(const AClientID: PInteger): Integer; cdecl; export;
+function ClientFree(const AClientID: PInteger): Integer; cdecl;
 begin
   with ClientManager do
     if Assigned(Clients[AClientID^]) then
@@ -34,7 +42,7 @@ begin
       Result := -1;
 end;
 
-function ClientNext(const AClientID: PInteger): Integer; cdecl; export;
+function ClientNext(const AClientID: PInteger): Integer; cdecl;
 begin
   with ClientManager do
     if Assigned(Clients[AClientID^]) and Clients[AClientID^].Next then
@@ -43,7 +51,7 @@ begin
       Result := -1;
 end;
 
-function ClientEOF(const AClientID: PInteger): Integer; cdecl; export;
+function ClientEOF(const AClientID: PInteger): Integer; cdecl;
 begin
   with ClientManager do
     if Assigned(Clients[AClientID^]) and not Clients[AClientID^].EOF then
@@ -52,7 +60,7 @@ begin
       Result := -1;
 end;
 
-function ClientExecSQL(const AClientID: PInteger; const AInput: PAnsiChar): Integer; cdecl; export;
+function ClientExecSQL(const AClientID: PInteger; const AInput: PAnsiChar): Integer; cdecl;
 begin
   with ClientManager do
     if Assigned(Clients[AClientID^]) and Assigned(AInput) and Clients[AClientID^].ExecSQL(UTF8String(AInput)) then
@@ -61,7 +69,7 @@ begin
       Result := -1;
 end;
 
-procedure ClientGetCurrentValue(const AClientID, AFieldIndex: PInteger; AResultStr: PAnsiChar); cdecl; export;
+procedure ClientGetCurrentValue(const AClientID, AFieldIndex: PInteger; AResultStr: PAnsiChar); cdecl;
 var
   ABuf: TBytes;
   ALen: Cardinal;
@@ -77,13 +85,13 @@ begin
   AResultStr[ALen] := #0;
 end;
 
-procedure QuotedStr(const AInput: PAnsiChar; AResultStr: PAnsiChar); cdecl; export;
+procedure QuotedStr(const AInput: PAnsiChar; AResultStr: PAnsiChar); cdecl;
 var
   AStr: UTF8String;
 begin
   AStr := '';
   if Assigned(AInput) then
-    AStr := UTF8Encode({$IFNDEF FPC}System.{$ENDIF}SysUtils.QuotedStr({$IFNDEF FPC}UTF8ToString{$ENDIF}(AInput)));
+    AStr := {$IFNDEF FPC}UTF8Encode{$ENDIF}({$IFNDEF FPC}System.{$ENDIF}SysUtils.QuotedStr({$IFNDEF FPC}UTF8ToString{$ENDIF}(AInput)));
   {$IFNDEF FPC}System.AnsiStrings.{$ENDIF}StrLCopy(AResultStr, PAnsiChar(AStr), Length(AStr));
 end;
 
@@ -107,7 +115,7 @@ begin
   AModuleName   := ChangeFileExt(AModuleName, '.ini');
   {$ENDIF}
   {$IFDEF LINUX}
-  AModuleName   := '/etc/udf_SphinxClient/udf_SphinxClient.conf';
+  AModuleName   := '/etc/firebird/udf_SphinxClient.conf';
   {$ENDIF}
   ALibName      := 'libmysql.dll';
   AServer       := '127.0.0.1';
@@ -126,19 +134,11 @@ begin
   ClientManager := TSphinxClientManager.Create(ALibName, AServer, Cardinal(APort));
 end;
 
-exports
-  ClientCreate,
-  ClientFree,
-  ClientNext,
-  ClientEOF,
-  ClientExecSQL,
-  ClientGetCurrentValue,
-  QuotedStr;
-
 initialization
   InitClientManager;
 
 finalization
-  FreeAndNil(ClientManager);
+  if Assigned(ClientManager) then
+    FreeAndNil(ClientManager);
 
 end.
