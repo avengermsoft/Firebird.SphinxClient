@@ -1,9 +1,7 @@
 library udf_SphinxClient;
 
-{$IFDEF FPC}
-  {$MODE objfpc}
-  {$H+}
-{$ELSE}
+{$INCLUDE udf_SphinxClient.inc}
+{$IFNDEF FPC}
   {$WEAKLINKRTTI ON}
   {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
 
