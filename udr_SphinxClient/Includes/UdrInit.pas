@@ -1,8 +1,8 @@
 unit UdrInit;
 
-interface
-
 {$INCLUDE udr_SphinxClient.inc}
+
+interface
 
 uses Firebird;
 
