@@ -1,6 +1,10 @@
 {$IFDEF FPC}
   {$MODE Delphi}
   {$H+}
+  {$PACKRECORDS C}
+{$ELSE}
+  {$ALIGN ON}
+  {$MINENUMSIZE 4}
 {$ENDIF}
 
 {$IFDEF MSWINDOWS}
