@@ -1,11 +1,15 @@
 unit UdrQuotedStr;
 
-{$ALIGN ON}
-{$MINENUMSIZE 4}
+{$INCLUDE udr_SphinxClient.inc}
 
 interface
 
-uses System.SysUtils, Firebird;
+uses
+  {$IFNDEF FPC}
+  System.SysUtils, Firebird
+  {$ELSE}
+  SysUtils, Firebird
+  {$ENDIF};
 
 type
   PQuotedStrInMessage = ^TQuotedStrInMessage;
@@ -66,7 +70,11 @@ begin
     end
     else
     begin
+      {$IFNDEF FPC}
       AStr      := UTF8Encode(System.SysUtils.QuotedStr(UTF8ToString(AInMsg.Str)));
+      {$ELSE}
+      AStr      := SysUtils.QuotedStr(AInMsg.Str);
+      {$ENDIF}
       with AOutMsg^ do
       begin
         StrLen  := Length(AStr);

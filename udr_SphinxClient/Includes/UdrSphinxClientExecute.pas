@@ -1,11 +1,15 @@
 unit UdrSphinxClientExecute;
 
-{$ALIGN ON}
-{$MINENUMSIZE 4}
+{$INCLUDE udr_SphinxClient.inc}
 
 interface
 
-uses System.SysUtils, Firebird, u_SphinxMySQL, Winapi.Windows, System.IniFiles;
+uses
+  {$IFNDEF FPC}
+  System.SysUtils, Winapi.Windows, System.IniFiles, u_SphinxMySQL, Firebird
+  {$ELSE}
+  SysUtils, IniFiles, u_SphinxMySQL, Firebird
+  {$ENDIF};
 
 type
   PSphinxClientExecuteInMessage = ^TSphinxClientExecuteInMessage;
@@ -89,12 +93,12 @@ begin
       begin
         with FOutMessage^ do
         begin
-          ModuleIDNull := ARowL[0] = 0;
-          ModuleID     := StrToInt64Def(String(ARow[0]^), 0);
-          RowIDLen     := ARowL[1];
+          ModuleIDNull := ARowL^[0] = 0;
+          ModuleID     := StrToInt64Def(String(ARow^[0]^), 0);
+          RowIDLen     := ARowL^[1];
           RowIDNull    := RowIDLen = 0;
           if RowIDLen > 0 then
-            Move(PAnsiChar(ARow[1])^, RowID[0], RowIDLen * SizeOf(AnsiChar));
+            Move(PAnsiChar(ARow^[1])^, RowID[0], RowIDLen * SizeOf(AnsiChar));
         end;
       end;
     end;
@@ -108,15 +112,22 @@ end;
 
 procedure TSphinxClientExecuteProcedure.ReadParams;
 var
+  {$IFDEF WINDOWS}
   P: PChar;
+  {$ENDIF}
   AModuleName: String;
 begin
+  {$IFDEF WINDOWS}
   GetMem(P, MAX_PATH);
   try
     SetString(AModuleName, P, GetModuleFileName(HInstance, P, MAX_PATH));
   finally
     FreeMem(P);
   end;
+  {$ENDIF}
+  {$IFDEF LINUX}
+  AModuleName  := '/etc/firebird/udr_SphinxClient.conf';
+  {$ENDIF}
   AModuleName  := ChangeFileExt(AModuleName, '.ini');
   FLibName     := 'libmysql.dll';
   FServer      := '127.0.0.1';

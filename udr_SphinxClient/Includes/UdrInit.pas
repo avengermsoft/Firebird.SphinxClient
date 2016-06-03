@@ -2,6 +2,8 @@ unit UdrInit;
 
 interface
 
+{$INCLUDE udr_SphinxClient.inc}
+
 uses Firebird;
 
 function firebird_udr_plugin(status: IStatus; theirUnloadFlagLocal: BooleanPtr; udrPlugin: IUdrPlugin): BooleanPtr; cdecl;

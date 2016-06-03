@@ -2,11 +2,25 @@
 
 unit Firebird;
 
+{$IFDEF FPC}
+  {$MODE Delphi}
+  {$H+}
+  {$PACKRECORDS C}
+{$ELSE}
+  {$ALIGN ON}
+  {$MINENUMSIZE 4}
+{$ENDIF}
+
 {$WARNINGS OFF}
 
 interface
 
-uses System.Classes, System.SysUtils;
+uses
+  {$IFNDEF FPC}
+  System.SysUtils, System.Classes
+  {$ELSE}
+  SysUtils, Classes
+  {$ENDIF};
 
 type
 {$IFNDEF FPC}
