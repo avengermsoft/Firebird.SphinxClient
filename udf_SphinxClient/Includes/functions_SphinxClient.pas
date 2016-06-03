@@ -90,9 +90,15 @@ var
   AStr: UTF8String;
 begin
   AStr := '';
+  {$IFNDEF FPC}
   if Assigned(AInput) then
-    AStr := {$IFNDEF FPC}UTF8Encode{$ENDIF}({$IFNDEF FPC}System.{$ENDIF}SysUtils.QuotedStr({$IFNDEF FPC}UTF8ToString{$ENDIF}(AInput)));
-  {$IFNDEF FPC}System.AnsiStrings.{$ENDIF}StrLCopy(AResultStr, PAnsiChar(AStr), Length(AStr));
+    AStr := UTF8Encode(System.SysUtils.QuotedStr(UTF8ToString(AInput)));
+  System.AnsiStrings.StrLCopy(AResultStr, PAnsiChar(AStr), Length(AStr));
+  {$ELSE}
+  if Assigned(AInput) then
+    AStr := SysUtils.QuotedStr(AInput);
+  StrLCopy(AResultStr, PAnsiChar(AStr), Length(AStr));
+  {$ENDIF}
 end;
 
 procedure InitClientManager;

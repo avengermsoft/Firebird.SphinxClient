@@ -172,10 +172,10 @@ var
 begin
   if (not EOF) and (AFieldIndex > -1) and (AFieldIndex < FFieldsCount) then
   begin
-    ALen := FRowLengths[AFieldIndex];
+    ALen := FRowLengths^[AFieldIndex];
     SetLength(Result, ALen);
     if ALen > 0 then
-      Move(FRow[AFieldIndex]^, Result[0], ALen);
+      Move(FRow^[AFieldIndex]^, Result[0], ALen);
   end
   else
     SetLength(Result, 0);
