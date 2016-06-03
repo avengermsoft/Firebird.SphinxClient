@@ -22,7 +22,9 @@ exports
   ClientGetCurrentValue,
   QuotedStr;
 
+{$IFNDEF FPC} // Bug FPC TThreadList.LockList and IsMultiThread
 begin
   IsMultiThread := True;
+{$ENDIF}
 
 end.
