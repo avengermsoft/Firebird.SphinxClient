@@ -3,10 +3,11 @@ unit u_SphinxMySQL;
 {$IFDEF FPC}
   {$MODE Delphi}
   {$H+}
+  {$PACKRECORDS C}
+{$ELSE}
+  {$ALIGN ON}
+  {$MINENUMSIZE 4}
 {$ENDIF}
-
-{$ALIGN ON}
-{$MINENUMSIZE 4}
 
 {$IFDEF MSWINDOWS}
   {$IFNDEF WINDOWS}
@@ -24,12 +25,15 @@ uses
   {$ENDIF};
 
 type
+  {$IFDEF FPC}
+  ULong                     = {$IFDEF LINUX}{$IFDEF CPU64}QWord{$ELSE}LongWord{$ENDIF}{$ELSE}LongWord{$ENDIF};
+  {$ENDIF}
   PMySQL                    = Pointer;
   PMySQLResult              = Pointer;
   PMySQLRow                 = ^TMySQLRow; // return data as array of strings
   TMySQLRow                 = array [0..MaxInt div SizeOf(PAnsiChar) - 1] of PAnsiChar;
   PMySQLLengths             = ^TMySQLLengths;
-  TMySQLLengths             = array [0..MaxInt div SizeOf(Cardinal) - 1] of Cardinal;
+  TMySQLLengths             = array [0..MaxInt div SizeOf(ULong) - 1] of ULong;
   TMySQLOption              = (
     MYSQL_OPT_CONNECT_TIMEOUT, MYSQL_OPT_COMPRESS, MYSQL_OPT_NAMED_PIPE,
     MYSQL_INIT_COMMAND, MYSQL_READ_DEFAULT_FILE, MYSQL_READ_DEFAULT_GROUP,
@@ -52,13 +56,13 @@ type
     MYSQL_OPT_SSL_ENFORCE
   );
   Tmysql_init               = function (_mysql: PMySQL): PMySQL; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
-  Tmysql_real_connect       = function (_mysql: PMySQL; host, user, passwd, db: PAnsiChar; port: Cardinal; unix_socket: PAnsiChar; clientflag: Cardinal): PMySQL; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_real_connect       = function (_mysql: PMySQL; host, user, passwd, db: PAnsiChar; port: Cardinal; unix_socket: PAnsiChar; clientflag: ULong): PMySQL; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
   Tmysql_close              = procedure(_mysql: PMySQL); {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
   Tmysql_options            = function (_mysql: PMySQL; option: TMySQLOption; arg: Pointer): Integer; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
   Tmysql_set_character_set  = function (_mysql: PMySQL; csname: PAnsiChar): Integer; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
   Tmysql_character_set_name = function (_mysql: PMySQL): PAnsiChar; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
   Tmysql_query              = function (_mysql: PMySQL; q: PAnsiChar): Integer; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
-  Tmysql_real_query         = function (_mysql: PMySQL; q: PAnsiChar; length: Cardinal): Integer; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_real_query         = function (_mysql: PMySQL; q: PAnsiChar; length: ULong): Integer; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
   Tmysql_store_result       = function (_mysql: PMySQL): PMySQLResult; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
   Tmysql_num_fields         = function (_res: PMySQLResult): Cardinal; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
   Tmysql_num_rows           = function (_res: PMySQLResult): UInt64; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
@@ -68,12 +72,12 @@ type
   Tmysql_errno              = function (_mysql: PMySQL): Cardinal; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
   Tmysql_error              = function (_mysql: PMySQL): PAnsiChar; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
   Tmysql_get_server_info    = function (_mysql: PMySQL): PAnsiChar; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
-  Tmysql_get_server_version = function (_mysql: PMySQL): Cardinal; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
+  Tmysql_get_server_version = function (_mysql: PMySQL): ULong; {$IFDEF WINDOWS}stdcall;{$ENDIF}{$IFDEF LINUX}cdecl;{$ENDIF}
 
   ESphinxMySQLClientLibrary = Exception;
   TSphinxMySQLClientLibrary = class
   private
-    FLibraryHandle: {$IFDEF WINDOWS}THandle;{$ENDIF}{$IFDEF LINUX}Pointer;{$ENDIF}
+    FLibraryHandle: {$IFDEF WINDOWS}THandle{$ENDIF}{$IFDEF LINUX}Pointer{$ENDIF};
     FLibraryName: String;
   private
     Fmysql_init              : Tmysql_init;
