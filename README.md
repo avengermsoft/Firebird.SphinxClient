@@ -2,9 +2,18 @@
 Библиотека позволяет делать запросы к Sphinx из PL/SQL Firebird. Поставляется в двух вариантах - UDF (Firebird 2.5/3.0) и UDR (Firebird 3.0)
 
 ##### Настройка UDF
-1.	Необходимо в каталог UDF сервера Firebird скопировать два файла udf_SphinxClient.dll и udf_SphinxClient.ini
-2.	Произвести первичную настройку в файле udf_SphinxClient.ini, где указать адрес и порт Sphinx сервера, библиотеку доступа к SphinxQL.
-3.	Пролить в базу файл udf_SphinxClient.sql
+- Windows
+  1.	Необходимо в каталог UDF сервера Firebird скопировать два файла udf_SphinxClient.dll и udf_SphinxClient.ini
+  2.	Произвести первичную настройку в файле udf_SphinxClient.ini, где указать адрес и порт Sphinx сервера, библиотеку доступа к SphinxQL.
+  3.	Пролить в базу файл udf_SphinxClient.sql
+- Linux
+  1.	Необходимо в каталог UDF сервера Firebird скопировать файл libudf_SphinxClient.so. В каталог /etc/firebird скопировать файл udf_SphinxClient.conf
+  2.	Произвести первичную настройку в файле udf_SphinxClient.conf, где указать адрес и порт Sphinx сервера, библиотеку доступа к SphinxQL.
+  3.	Пролить в базу файл udf_SphinxClient.sql
+##### Сборка UDF на Linux
+```bash
+fpc -B -O2 -Ur -Xs -Cg -XX -CX -dRELEASE -dx86_64 -Tlinux udf_SphinxClient.dpr 
+```
 
 ##### Пример использование UDF
 ```sql
