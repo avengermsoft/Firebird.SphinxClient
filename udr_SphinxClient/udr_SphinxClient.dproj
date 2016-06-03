@@ -113,8 +113,8 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="Includes\Firebird.pas"/>
-        <DCCReference Include="Includes\UdrInit.pas"/>
         <DCCReference Include="..\u_SphinxMySQL.pas"/>
+        <DCCReference Include="Includes\UdrInit.pas"/>
         <DCCReference Include="Includes\UdrSphinxClientExecute.pas"/>
         <DCCReference Include="Includes\UdrQuotedStr.pas"/>
         <BuildConfiguration Include="Debug">

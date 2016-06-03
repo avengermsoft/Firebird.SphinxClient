@@ -1,14 +1,17 @@
 library udr_SphinxClient;
 
-{$WEAKLINKRTTI ON}
-{$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
+{$INCLUDE udr_SphinxClient.inc}
+{$IFNDEF FPC}
+  {$WEAKLINKRTTI ON}
+  {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
 
-{$R udr_SphinxClient.res}
+  {$R udr_SphinxClient.res}
+{$ENDIF}
 
 uses
   Firebird in 'Includes\Firebird.pas',
-  UdrInit in 'Includes\UdrInit.pas',
   u_SphinxMySQL in '..\u_SphinxMySQL.pas',
+  UdrInit in 'Includes\UdrInit.pas',
   UdrSphinxClientExecute in 'Includes\UdrSphinxClientExecute.pas',
   UdrQuotedStr in 'Includes\UdrQuotedStr.pas';
 
