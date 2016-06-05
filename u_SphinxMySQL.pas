@@ -21,7 +21,7 @@ uses
   {$IFNDEF FPC}
   System.SysUtils, Winapi.Windows
   {$ELSE}
-  SysUtils, dl
+  SysUtils, {$IFDEF LINUX}dl{$ELSE}Windows{$ENDIF}
   {$ENDIF};
 
 type
@@ -295,7 +295,7 @@ procedure TSphinxMySQLClientLibrary.LoadLibrary;
   {$IFDEF WINDOWS}
   function GetProcAddr(const AProcName: String): Pointer;
   begin
-    Result := Winapi.Windows.GetProcAddress(FLibraryHandle, PChar(AProcName));
+    Result := {$IFNDEF FPC}Winapi.{$ENDIF}Windows.GetProcAddress(FLibraryHandle, PChar(AProcName));
     if not Assigned(Result) then
       RaiseLastOSError;
   end;
@@ -309,7 +309,7 @@ procedure TSphinxMySQLClientLibrary.LoadLibrary;
 
 begin
   {$IFDEF WINDOWS}
-  FLibraryHandle := Winapi.Windows.LoadLibrary(PChar(FLibraryName));
+  FLibraryHandle := {$IFNDEF FPC}Winapi.{$ENDIF}Windows.LoadLibrary(PChar(FLibraryName));
   if (FLibraryHandle > HINSTANCE_ERROR) then
   {$ENDIF}
   {$IFDEF LINUX}
@@ -345,7 +345,7 @@ begin
   {$IFDEF WINDOWS}
   if (FLibraryHandle > HINSTANCE_ERROR) then
   begin
-    Winapi.Windows.FreeLibrary(FLibraryHandle);
+    {$IFNDEF FPC}Winapi.{$ENDIF}Windows.FreeLibrary(FLibraryHandle);
     FLibraryHandle := HINSTANCE_ERROR;
   end;
   {$ENDIF}
