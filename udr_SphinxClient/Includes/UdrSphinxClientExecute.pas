@@ -8,7 +8,7 @@ uses
   {$IFNDEF FPC}
   System.SysUtils, Winapi.Windows, System.IniFiles, u_SphinxMySQL, Firebird
   {$ELSE}
-  SysUtils, IniFiles, u_SphinxMySQL, Firebird
+  SysUtils, {$IFDEF WINDOWS}Windows,{$ENDIF} IniFiles, u_SphinxMySQL, Firebird
   {$ENDIF};
 
 type
@@ -120,7 +120,7 @@ begin
   {$IFDEF WINDOWS}
   GetMem(P, MAX_PATH);
   try
-    SetString(AModuleName, P, GetModuleFileName(HInstance, P, MAX_PATH));
+    SetString(AModuleName, P, {$IFNDEF FPC}Winapi.{$ENDIF}Windows.GetModuleFileName(HInstance, P, MAX_PATH));
   finally
     FreeMem(P);
   end;
