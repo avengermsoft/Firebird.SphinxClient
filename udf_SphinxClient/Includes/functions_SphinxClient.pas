@@ -4,6 +4,12 @@ unit functions_SphinxClient;
 
 interface
 
+{$IFDEF FPC} // FPC PInteger Bug
+{$IFDEF WINDOWS}
+uses Windows;
+{$ENDIF}
+{$ENDIF}
+
 function ClientCreate: Integer; cdecl;
 function ClientFree(const AClientID: PInteger): Integer; cdecl;
 function ClientNext(const AClientID: PInteger): Integer; cdecl;
@@ -18,7 +24,7 @@ uses
   {$IFNDEF FPC}
   System.SysUtils, Winapi.Windows, System.IniFiles, System.AnsiStrings, SphinxClient
   {$ELSE}
-  SysUtils, IniFiles, SphinxClient
+  SysUtils, (*{$IFDEF WINDOWS}Windows,{$ENDIF}*) IniFiles, SphinxClient
   {$ENDIF};
 
 var
@@ -114,7 +120,7 @@ begin
   {$IFDEF WINDOWS}
   GetMem(P, MAX_PATH);
   try
-    SetString(AModuleName, P, GetModuleFileName(HInstance, P, MAX_PATH));
+    SetString(AModuleName, P, {$IFNDEF FPC}Winapi.{$ENDIF}Windows.GetModuleFileName(HInstance, P, MAX_PATH));
   finally
     FreeMem(P);
   end;
