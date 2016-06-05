@@ -5,7 +5,7 @@ library udf_SphinxClient;
   {$WEAKLINKRTTI ON}
   {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
 
-  {$R udf_SphinxClient.res}
+  {$R 'udf_SphinxClient.res' 'udf_SphinxClient.rc'}
 {$ENDIF}
 
 uses
