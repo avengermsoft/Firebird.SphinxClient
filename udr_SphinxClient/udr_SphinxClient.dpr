@@ -5,7 +5,7 @@ library udr_SphinxClient;
   {$WEAKLINKRTTI ON}
   {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
 
-  {$R udr_SphinxClient.res}
+  {$R 'udr_SphinxClient.res' 'udr_SphinxClient.rc'}
 {$ENDIF}
 
 uses
