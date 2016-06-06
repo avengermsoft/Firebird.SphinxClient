@@ -12,7 +12,7 @@
   3.	Пролить в базу файл udf_SphinxClient.sql
   
 ##### Сборка UDF на Linux
-> fpc -B -O2 -Ur -Xs -Cg -XX -CX -dRELEASE -dx86_64 -Tlinux udf_SphinxClient.dpr 
+> fpc -Cg -B -O2 -Xs -Xg -XX -CX -Ur -dRELEASE -dx86_64 -Tlinux udf_SphinxClient.dpr
 
 ##### Пример использование UDF
 ```sql
